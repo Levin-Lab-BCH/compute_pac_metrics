@@ -1,0 +1,29 @@
+function [] = plot_phase_maps(chan_labels,groups_label,save_dir,column_headers, row_headers,vargin)
+
+for group = 1:length(nargin)
+for ch = 1:18
+    
+    im = vargin.(groups_label{1,group})(:,:,ch);
+    
+    figure;
+    all = heatmap(flipud(im),'Colormap',pink,'XData',column_headers,'YData',flipud(row_headers(:)), ...
+        'XLabel','Phase Frequency (Hz)','YLabel','Amplitude Frequency (Hz)','Title',chan_labels(ch),'ColorLimits',[-pi pi]);
+    axs = struct(gca); %ignore warning that this should be avoided
+    saveas(all,strcat(save_dir, filesep ,'Images' ,filesep ,'Cluster Phase Maps', filesep ,groups_label{group},'_',chan_labels(ch),'_cluster_phase_allfreqpairs','.png'))
+%% %% CIRCULAR plot phase maps
+%yb note - this looks like it does the same thing just on different color
+%scheme/no numbers, commenting out for now
+    fig=figure;
+    imagesc(flipud(im));
+%     set(gca, 'YTick',1:length(comodulogram_row_headers) ,'YTickLabel', flipud(comodulogram_row_headers));
+%     set(gca, 'XTick',1:length(comodulogram_column_headers),'XTickLabel', comodulogram_column_headers);
+     phasemap;
+     title(chan_labels(ch))
+ %   xlabel('Phase Frequency (Hz)');
+ set(gca,'XTick',[]); set(gca,'YTick',[]);
+ saveas(fig,strcat(save_dir, filesep ,'Images' ,filesep ,'Cluster Phase Maps', filesep ,groups_label{group},'_',chan_labels(ch),'_cluster_phase_allfreqpairs','.png'))
+ %   ylabel('Amplitude Frequency (Hz)');
+%     title(chan_labels(ch));
+end
+topoplot_of_comod_allm(savestr,saveloc,group)
+end

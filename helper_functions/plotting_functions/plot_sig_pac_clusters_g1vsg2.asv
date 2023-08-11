@@ -1,0 +1,27 @@
+
+% make channel plots with ASD/RTT and TD overlap
+function [] = plot_sig_pac_clusters_g1vsg2(compare_sig_clusters,comodulogram_row_headers,comodulogram_column_headers,comodulogram_third_dim_headers,save_dir,chan_labels,compare_cluster)
+% save plots of significance
+% open test file to get column labels
+% change to directory to save
+cd([save_dir filesep 'Images' filesep 'Cluster maps'])
+% go through all channels
+
+for ch = 1:length(comodulogram_third_dim_headers)
+
+    compare_im = compare_sig_clusters(:,:,ch);
+
+    figure;
+    
+    all = heatmap(flipud(compare_im),'Colormap',pink,'XData',comodulogram_column_headers,'YData',flipud(comodulogram_row_headers), ...
+        'XLabel','Phase Frequency (Hz)','YLabel','Amplitude Frequency (Hz)','Title',chan_labels(ch),...
+        'ColorLimits',[0 1]);
+    axs = struct(gca); %ignore warning that this should be avoided
+    cb = axs.Colorbar;
+    cb.TickLabels = {'None','','','','','','','','','','Sig'};
+    saveas(all,strcat(chan_labels(ch),'_compare_sig_clusters','.png'));
+    close(all)
+end
+
+figure;
+histogram(compare_cluster_dist);
