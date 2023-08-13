@@ -1,7 +1,7 @@
 Author: Yael Braverman
 This folder contains a folder of code which will take the pac outputs from beapp and compute MI/phase bias metrics and create plots
 
-Main script to access rest of code: run_pac_analysis 
+Main script to access rest of code: run_compute_pac_metrics
 
 Requirements:
 
