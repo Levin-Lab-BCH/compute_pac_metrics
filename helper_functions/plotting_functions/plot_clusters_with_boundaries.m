@@ -1,6 +1,6 @@
 %author: yael braverman refactored from code in Fleming's pac analysis -
 %may need to troubleshoot/generalize xticks
-function [] = plot_clusters_with_boundaries(curr_sig_clusters,curr_minorm,comodulogram_row_headers,comodulogram_column_headers,comodulogram_third_dim_headers,chan_labels,save_dir,group)
+function [] = plot_clusters_with_boundaries(curr_sig_clusters,curr_minorm,comodulogram_row_headers,comodulogram_column_headers,comodulogram_third_dim_headers,chan_labels,save_dir,group,colors)
 cd([save_dir filesep 'Images' filesep 'PAC Strength']) % change to directory to save
 % go through all channels
 
@@ -93,7 +93,7 @@ for ch = 1:length(comodulogram_third_dim_headers)
 end
 
 
-    topoplot_of_comod_allm_yb('_strength_clusters_w_boundaries.png',strcat(save_dir, filesep,'Images',filesep,'PAC Strength'),group)
+    topoplot_of_comod_allm_yb('_strength_clusters_w_boundaries.png',strcat(save_dir, filesep,'Images',filesep,'PAC Strength'),group,colors)
 
 %colorbar
 %saveas(all,'colorbar_strength_clusters.png');

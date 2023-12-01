@@ -1,4 +1,4 @@
-function [] = plot_sig_pac_clusters(sig_clusters,comodulogram_row_headers,comodulogram_column_headers,comodulogram_third_dim_headers,groups,save_dir,chan_labels)
+function [] = plot_sig_pac_clusters(sig_clusters,comodulogram_row_headers,comodulogram_column_headers,comodulogram_third_dim_headers,groups,save_dir,chan_labels,colors,hf_labels,lf_labels,freq_table,shade_by_freq_band)
 % save plots of significance - show whether at each hf/lf point asd/rtt was sig, td was sig or both or none (1 or 0)
 % change to directory to save
 cd([save_dir filesep 'Images' filesep 'Cluster Maps'])
@@ -13,16 +13,31 @@ only_g1 = ((g2_im ~= 1) & (g1_im == 1)) * 2; %only group 1 is orange
 only_g2 = ((g2_im == 1) & (g1_im ~= 1)) * 1; % only group 2 is green 
 
 all = only_g2 + only_g1 + both_im;
+%cmap = [1 1 1; TD_green_color, RTT_orange_color, both_yellow_color]
 cmap = [1 1 1; 0.4660 0.6740 0.1880; 0.8500 0.3250 0.0980; 0.9290 0.6940 0.1250];
+cmap = [1 1 1; colors{1,2}; colors{1,1}; colors{1,3}];
 for ch = 1:length(comodulogram_third_dim_headers)
     fig = figure;
     imagesc(flipud(all(:,:,ch)));
     hAxes = gca;
-    colormap( hAxes , cmap );
+    colormap(hAxes , cmap );
     set(gca,'YTick',0);
     set(gca,'XTick',0);
     caxis([0, 3]);
     set(gca,'CLim',[0 3])
+    hold on
+    if shade_by_freq_band
+        for coupled_band = 1:length(lf_labels)
+            [~,~,x_temp] =intersect(freq_table{:,lf_labels(coupled_band)}',comodulogram_column_headers);
+            x_shade = [min(x_temp):1:max(x_temp) max(x_temp):-1:min(x_temp)];
+            [~,~,y_temp] =intersect(freq_table{:,hf_labels(coupled_band)}',flipud(comodulogram_row_headers));
+            y_shade = [repmat(max(y_temp),1,length(x_shade)/2) repmat(min(y_temp),1,length(x_shade)/2)];
+           % fill(x_shade,y_shade,band_shade_colors{coupled_band},'FaceAlpha',0.3)
+            fill(x_shade,y_shade, [0 0.4470 0.7410],'FaceAlpha',0.1*coupled_band,'LineStyle',":")
+
+            hold on
+        end
+    end
     set(gca,'visible','off')
     fig.Name = strcat(chan_labels(ch),'_clusters');
 %      all_heatmap = heatmap(flipud(all(:,:,ch)), 'Colormap',cmap,'ColorLimits',[0 3],...
@@ -37,11 +52,12 @@ for ch = 1:length(comodulogram_third_dim_headers)
    %  axs = struct(gca); %ignore warning that this should be avoided
    %  cb = axs.Colorbar;
    %  cb.TickLabels = {'None','',groups{1,2},'',groups{1,1},'','Both'};
-     saveas(fig,strcat(chan_labels(ch),'_clusters','.png'));
+    % saveas(fig,strcat(chan_labels(ch),'_clusters','.png'));
+     exportgraphics(fig,strcat(chan_labels(ch),'_clusters','.png'),'Resolution',1000);
      close(fig)
 end
 %save colorbar
 fig = figure();
 
-topoplot_of_comod_allm_yb('_clusters.png',strcat(save_dir, filesep,'Images',filesep,'Cluster Maps'),'')
+topoplot_of_comod_allm_yb('_clusters.png',strcat(save_dir, filesep,'Images',filesep,'Cluster Maps'),'',colors)
 

@@ -33,7 +33,7 @@ for ch = 1:length(comodulogram_third_dim_headers)
 end
 
 
-topoplot_of_comod_allm_yb('_compare_sig_clusters.png',strcat(save_dir, filesep,'Images',filesep,'Cluster Maps'),'')
+topoplot_of_comod_allm_yb('_compare_sig_clusters.png',strcat(save_dir, filesep,'Images',filesep,'Cluster Maps'),'','')
 
 
 fig = figure;

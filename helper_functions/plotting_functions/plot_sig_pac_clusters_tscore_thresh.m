@@ -1,4 +1,4 @@
-function [] = plot_sig_pac_clusters_tscore_thresh(sig_clusters,comodulogram_row_headers,comodulogram_column_headers,comodulogram_third_dim_headers,groups,save_dir,chan_labels)
+function [] = plot_sig_pac_clusters_tscore_thresh(sig_clusters,comodulogram_row_headers,comodulogram_column_headers,comodulogram_third_dim_headers,groups,save_dir,chan_labels,colors)
 % save plots of significance - show whether at each hf/lf point asd/rtt was sig, td was sig or both or none (1 or 0)
 % change to directory to save
 cd([save_dir filesep 'Images' filesep 'Cluster Maps'])
@@ -14,6 +14,8 @@ only_g2 = ((g2_im == 1) & (g1_im ~= 1)) * 1; % only group 2 is green
 
 all = only_g2 + only_g1 + both_im;
 cmap = [1 1 1; 0.4660 0.6740 0.1880; 0.8500 0.3250 0.0980; 0.9290 0.6940 0.1250];
+cmap = [1 1 1; colors{1,2}; colors{1,1}; colors{1,3}];
+
 for ch = 1:length(comodulogram_third_dim_headers)
     fig = figure;
     imagesc(flipud(all(:,:,ch)));
@@ -43,4 +45,4 @@ end
 %save colorbar
 fig = figure();
 
-topoplot_of_comod_allm_yb('_clusters_tscore_thresh.png',strcat(save_dir, filesep,'Images',filesep,'Cluster Maps'),'')
+topoplot_of_comod_allm_yb('_clusters_tscore_thresh.png',strcat(save_dir, filesep,'Images',filesep,'Cluster Maps'),'',colors)

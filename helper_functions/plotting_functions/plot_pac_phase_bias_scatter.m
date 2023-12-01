@@ -1,4 +1,4 @@
-function [] = plot_pac_phase_bias_scatter(outcomes,save_dir,groups)
+function [] = plot_pac_phase_bias_scatter(outcomes,save_dir,groups,colors)
 %to do fix strength label
 count = 1;
 polar_names = outcomes.Properties.VariableNames(contains(outcomes.Properties.VariableNames,'_PhasBias_NoCircMean'));
@@ -20,23 +20,23 @@ x_g1 = x_g1(~isnan(x_g1));
     b = .95;
     a = 1.05;
     w_g1 = (b-a).*rand(length(x_g1),1) + a;
-    f = scatter(w_g1,x_g1',10,'MarkerFaceColor',[0.8500 0.3250 0.0980],'MarkerEdgeColor',[0.8500 0.3250 0.0980],'DisplayName',groups{1,1});
+    f = scatter(w_g1,x_g1',10,'MarkerFaceColor',colors{1,1},'MarkerEdgeColor',colors{1,1},'DisplayName',groups{1,1});
     hold on
     b = -.05;
     a = .05;
     w_g2 = (b-a).*rand(length(x_g2),1) + a;
-    scatter(w_g2,x_g2',10,'MarkerFaceColor',[0.4660 0.6740 0.1880],'MarkerEdgeColor',[0.4660 0.6740 0.1880],'DisplayName',groups{1,2});
+    scatter(w_g2,x_g2',10,'MarkerFaceColor',colors{1,2},'MarkerEdgeColor',colors{1,2},'DisplayName',groups{1,2});
     title(strrep(polar_names{polar_name},'_',' '));
     xlim([-.5 1.5]);
 
     %get average line axes
     line_width = (max(range(w_g2),range(w_g1)))*4;
 try
-    plot([median(w_g1)-line_width/2,median(w_g1)+line_width],[g1_avg,g1_avg],'--','Color',[0.8500 0.3250 0.0980],'LineWidth',2,'HandleVisibility','off');
+    plot([median(w_g1)-line_width/2,median(w_g1)+line_width],[g1_avg,g1_avg],'--','Color',colors{1,1},'LineWidth',2,'HandleVisibility','off');
 catch
     a=5
 end
-    plot([median(w_g2)-line_width/2,median(w_g2)+line_width],[g2_avg,g2_avg],'--','Color',[0.4660 0.6740 0.1880],'LineWidth',2,'HandleVisibility','off');
+    plot([median(w_g2)-line_width/2,median(w_g2)+line_width],[g2_avg,g2_avg],'--','Color',colors{1,2},'LineWidth',2,'HandleVisibility','off');
     set(gca,'Xtick',[])
    % ylim([-0.75, 2.5]);
     legend('Location','northeast')

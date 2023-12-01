@@ -1,4 +1,4 @@
-function [] = plot_phase_maps(chan_labels,groups_label,save_dir,column_headers, row_headers,vargin)
+function [] = plot_phase_maps(chan_labels,groups_label,save_dir,column_headers, row_headers,colors,vargin)
 
 for group = 1:length(groups_label)
 for ch = 1:18
@@ -29,5 +29,5 @@ set(gca,'CLim',[-pi pi]);
 %     title(chan_labels(ch));
 clear im
 end
-topoplot_of_comod_allm_yb('_cluster_phase_allfreqpairs.png',strcat(save_dir, filesep,'Images',filesep,'Extra',filesep,'Cluster Phase Maps'),groups_label{1,group})
+topoplot_of_comod_allm_yb('_cluster_phase_allfreqpairs.png',strcat(save_dir, filesep,'Images',filesep,'Extra',filesep,'Cluster Phase Maps'),groups_label{1,group},colors)
 end

@@ -1,4 +1,4 @@
-function [] = plot_pac_phase_bias(outcomes,save_dir,groups)
+function [] = plot_pac_phase_bias(outcomes,save_dir,groups,colors)
 
 polar_names = outcomes.Properties.VariableNames(contains(outcomes.Properties.VariableNames,'PhaseBias'));
 count = 1;
@@ -14,11 +14,11 @@ x_g2= (outcomes{(outcomes.Group_Num==2),polar_names{polar_name}});
     
     fig = figure;
 %     subplot(3,3,count);
-    f = polarscatter(x_g1,zeros(size(x_g1))+.85,30,'filled','^','MarkerFaceColor',[0.8500 0.3250 0.0980],'DisplayName',groups{1,1});
+    f = polarscatter(x_g1,zeros(size(x_g1))+.85,30,'filled','^','MarkerFaceColor',colors{1,1},'DisplayName',groups{1,1});
     hold on
-    polarscatter(x_g2,zeros(size(x_g2))+0.8,30,'filled','^','MarkerFaceColor',[0.4660 0.6740 0.1880],'DisplayName',groups{1,2});
-    polarscatter(g1_avg,0.5,65,'filled','MarkerFaceColor',[0.8500 0.3250 0.0980],'HandleVisibility','off');
-    polarscatter(g2_avg,0.5,65,'filled','MarkerFaceColor',[0.4660 0.6740 0.1880],'HandleVisibility','off');
+    polarscatter(x_g2,zeros(size(x_g2))+0.8,30,'filled','^','MarkerFaceColor',colors{1,2},'DisplayName',groups{1,2});
+    polarscatter(g1_avg,0.5,65,'filled','MarkerFaceColor',colors{1,1},'HandleVisibility','off');
+    polarscatter(g2_avg,0.5,65,'filled','MarkerFaceColor',colors{1,2},'HandleVisibility','off');
     title(strrep(polar_names{polar_name},'_',' '));
     rlim([0 1]);  
     rticks(gca,[])

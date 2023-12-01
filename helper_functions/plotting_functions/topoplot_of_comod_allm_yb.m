@@ -1,4 +1,4 @@
-function topoplot_of_comod_allm_yb(savestr,save_loc,group)
+function topoplot_of_comod_allm_yb(savestr,save_loc,group,colors)
 close all
 % cmin = 0.00000;
 % cmax = .000025;
@@ -46,13 +46,15 @@ elseif strcmp(savestr,'_clusters.png')
      c.TickLabels = {'None','','TD','','RTT','','Both'};
      %c.TickLabels = {'None','','ASD','','TD','','Both'};
      caxis([0 3])
-     cmap = [1 1 1; 0.4660 0.6740 0.1880; 0.8500 0.3250 0.0980; 0.9290 0.6940 0.1250];
+     %cmap = [1 1 1; 0.4660 0.6740 0.1880; 0.8500 0.3250 0.0980; 0.9290 0.6940 0.1250];
+     cmap = [1 1 1; colors{1,2}; colors{1,1}; colors{1,3}];
      colormap(ax,cmap)
 elseif strcmp(savestr,'_clusters_tscore_thresh.png')
      c.TickLabels = {'None','','TD','','RTT','','Both'};
      %c.TickLabels = {'None','','ASD','','TD','','Both'};
      caxis([0 3])
-     cmap = [1 1 1; 0.4660 0.6740 0.1880; 0.8500 0.3250 0.0980; 0.9290 0.6940 0.1250];
+    % cmap = [1 1 1; 0.4660 0.6740 0.1880; 0.8500 0.3250 0.0980; 0.9290 0.6940 0.1250];
+     cmap = [1 1 1; colors{1,2}; colors{1,1}; colors{1,3}];
      colormap(ax,cmap)
 elseif strcmp(savestr,'_compare_sig_clusters.png')
     colormap( ax , pink );

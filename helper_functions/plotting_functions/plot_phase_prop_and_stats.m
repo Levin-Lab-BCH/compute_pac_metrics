@@ -1,4 +1,4 @@
-function [] = plot_phase_prop_and_stats(phase_prop_bins,phase_stats,groups,save_dir,alpha)
+function [] = plot_phase_prop_and_stats(phase_prop_bins,phase_stats,groups,save_dir,alpha,colors)
 curr_fields = fields(phase_prop_bins);
 for region = 1:length(curr_fields)
     % plot and save phase proportion
@@ -6,9 +6,9 @@ if any(isnan(phase_prop_bins.(curr_fields{region}).(groups{1,1}))) | any(isnan(p
     continue
 end
     fig = figure;
-f = polarplot([alpha, alpha(1)], [mean(phase_prop_bins.(curr_fields{region}).(groups{1,1}),1), mean(phase_prop_bins.(curr_fields{region}).(groups{1,1})(:,1),1)],'-s','LineWidth',2,'Color',[0.4660 0.6740 0.1880]);
+f = polarplot([alpha, alpha(1)], [mean(phase_prop_bins.(curr_fields{region}).(groups{1,1}),1), mean(phase_prop_bins.(curr_fields{region}).(groups{1,1})(:,1),1)],'-s','LineWidth',2,'Color',colors{1,1});
 hold on
-polarplot([alpha, alpha(1)], [mean(phase_prop_bins.(curr_fields{region}).(groups{1,2}),1), mean(phase_prop_bins.(curr_fields{region}).(groups{1,2})(:,1),1)],'-s','LineWidth',2,'Color',[0.8500 0.3250 0.0980]);
+polarplot([alpha, alpha(1)], [mean(phase_prop_bins.(curr_fields{region}).(groups{1,2}),1), mean(phase_prop_bins.(curr_fields{region}).(groups{1,2})(:,1),1)],'-s','LineWidth',2,'Color',colors{1,2});
 legend(groups)
 title(['Phase Proportion ',curr_fields{region}],'FontSize',14)
 rlim([0 .2])

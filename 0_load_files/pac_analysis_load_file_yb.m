@@ -3,7 +3,7 @@ function [grp_proc_info] = pac_analysis_load_file_yb()
 %set up user preferences for running post beapp pac analysis 
 
 %% Provide Path Information - this assumes you
-grp_proc_info.pac_metrics.path_struct.code_path = 'X:\Public\EEG Analyses + Matlab scripts\PAC\Analyze_beapp_PAC_outputs'; %path to your "Analyze_beapp_PAC_outputs" folder, ex: '/Volumes/neuro-levin/Public/EEG Analyses + Matlab scripts/PAC/Analyze_beapp_PAC_outputs';
+grp_proc_info.pac_metrics.path_struct.code_path = 'Z:\Public\EEG_Analyses_+_Matlab_scripts\PAC\Analyze_beapp_PAC_outputs'; %path to your "Analyze_beapp_PAC_outputs" folder, ex: '/Volumes/neuro-levin/Public/EEG Analyses + Matlab scripts/PAC/Analyze_beapp_PAC_outputs';
 grp_proc_info.pac_metrics.path_struct.outcomes_path = 'C:\Users\ch220650\Downloads\Rett_project_visits_beapp_labels.csv';%C:\Users\ch220650\Documents\02_Programming_Projects\01_BEAPP_TestsandExternalSupport\Rett_project_visits_beapp_labels.csv'; %path to our outcomes csv sheet with IDs and Groups, ex: '/Users/devorahkranz/Documents/Nelson_Fagiolini_Levin/Rett project/Rett_project_visits.csv';%/ABCCT_outcomes.csv';
 grp_proc_info.pac_metrics.path_struct.src_dir = 'C:\Users\ch220650\Documents';%02_Programming_Projects\01_BEAPP_TestsandExternalSupport';% path to where your beapp pac and out folder lives for your beapp run, ex: '/Users/devorahkranz/Documents/Nelson_Fagiolini_Levin/Rett project/Data/participants/'; pac_BL_all_6sSegment_NoAmp_Padded_Overlap';%Devorah-Pac';
 grp_proc_info.pac_metrics.path_struct.beapp_run_tag = '_dk_8123' ; %run tag for your beapp run ex: _BL_all_6sSegment_NoAmp_Padded_Overlap - make sure to include "_" at beginning!
@@ -13,7 +13,7 @@ grp_proc_info.pac_metrics.groups = {'RTT','TD'}; %your two diagnostic groups, li
 %% do you want to compute sig clusters both ways 
 
 %% Toggle on/off different module steps
-grp_proc_info.pac_metrics.toggle_steps.run_all = 1 ; %if run all, ignore all steps below
+grp_proc_info.pac_metrics.toggle_steps.run_all = 0 ; %if run all, ignore all steps below
 
 %necessary
 grp_proc_info.pac_metrics.toggle_steps.load_files = 0; %if you've already loaded all files for this run, set to 0 and it will load the pre-computed surrogates

@@ -1,4 +1,4 @@
-function [] = plot_g1_minus_g2_pac_strength(MI_norm,groups,chan_labels,save_dir)
+function [] = plot_g1_minus_g2_pac_strength(MI_norm,groups,chan_labels,save_dir,colors)
 %cd('/Volumes/LaCie/Levin/PAC/Images/T1 PAC Strength Contrast')
 cd([save_dir filesep 'Images' filesep 'PAC Strength Contrast'])
 
@@ -37,4 +37,4 @@ caxis([-0.5 .5]);
 %cb = colorbar;
 saveas(ax,strcat('colorbar_strength_contrast.fig'));
 
-topoplot_of_comod_allm_yb('_strength_contrast.png',strcat(save_dir, filesep,'Images',filesep,'PAC Strength Contrast'),'')
+topoplot_of_comod_allm_yb('_strength_contrast.png',strcat(save_dir, filesep,'Images',filesep,'PAC Strength Contrast'),'',colors)
