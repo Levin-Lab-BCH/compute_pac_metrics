@@ -101,7 +101,7 @@ if all_plots ; plot_MI_std(std_struct,save_dir,groups,comodulogram_row_headers,c
 %% FREQ BAND ANALYSIS First compute the phase strength, phase bias, and phase dist for each freq band then plot
 if grp_proc_info_in.pac_metrics.toggle_steps.run_all | grp_proc_info_in.pac_metrics.toggle_steps.run_freq_band_analysis
     outcomes = readtable(outcomes_path);
-    [outcomes] = run_phase_metrics_freq_band_analysis(lf_labels,hf_labels,freq_table,{'WholeBrain','Anterior','Posterior','FP1FP2'},{[1:18],anterior,posterior,[1,3]},outcomes,comodulogram_column_headers,comodulogram_row_headers,order_dist,order,groups,amp_dist_all,MI_norm,alpha_deg);
+    [outcomes] = run_phase_metrics_freq_band_analysis(lf_labels,hf_labels,freq_table,{'WholeBrain','Anterior','Posterior','FP1FP2','C3C4','O1O2'},{[1:18],anterior,posterior,[1,3],[6,15],[11,12]},outcomes,comodulogram_column_headers,comodulogram_row_headers,order_dist,order,groups,amp_dist_all,MI_norm,alpha_deg);
     writetable(outcomes,[save_dir filesep 'freqband_PAC_metrics_complete.xlsx']);
     %plot phase distribution
     if 1; plot_pac_phase_distribution(outcomes,save_dir,grp_proc_info_in.pac_metrics.colors); end
@@ -139,7 +139,9 @@ for sig_cluster_method = 1:2
         % set up report table
         outcomes = readtable(outcomes_path);
         overlap_vec = {'Overlap',[groups{1,1},'only']};
-        region_table = table([1,3], [11,12],[7,16],[1,2,3,4,5,17,18],[8,13,9,14,10,11,12],'VariableNames',{'FP1FP2','O1O2','T3T4','Anterior','Posterior'});
+        %[8,13,9,14,10,11,12]
+        %[1,2,3,4,5,17,18]
+        region_table = table([1,3], [11,12],[7,16],[6, 15],anterior,posterior,'VariableNames',{'FP1FP2','O1O2','T3T4','C3C4','Anterior','Posterior'});
         [outcomes] = compute_MI_average(outcomes,order_dist,order,groups,amp_dist_all,MI_norm,g1_g2_overlap_clusters,g1_nog2_clusters,region_table,overlap_vec);
         writetable(outcomes,[save_dir filesep 'PAC_MInorm_cluster_averages_revised_allfreqpairs.xlsx']);
     end
