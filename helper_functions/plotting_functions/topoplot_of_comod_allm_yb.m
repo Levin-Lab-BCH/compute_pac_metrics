@@ -121,5 +121,7 @@ if isempty(group); savestr(1)=''; %remove underscore for saving;
 end
 set(gcf,'InvertHardCopy','Off');
 save_label = [group,strrep(savestr,'.png','')];
-saveas(h3,strcat(save_loc,filesep,save_label,'_comod_topoplot','.png'))
+%saveas(h3,strcat(save_loc,filesep,save_label,'_comod_topoplot','.png'))
+exportgraphics(h3,strcat(save_loc,filesep,save_label,'_comod_topoplot_1','.png'),'Resolution',1000);
+
 close(h3)
