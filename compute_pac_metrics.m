@@ -4,7 +4,7 @@ outcomes_path = grp_proc_info_in.pac_metrics.path_struct.outcomes_path;
 src_dir =  fullfile(grp_proc_info_in.pac_metrics.path_struct.src_dir,strcat('pac',grp_proc_info_in.pac_metrics.path_struct.beapp_run_tag));
 
 %% DO NOT EDIT BELOW THIS LINE
-
+overwrite_unique_combs = grp_proc_info_in.overwrite_unique_combs;
 if ~isfield(grp_proc_info_in.pac_metrics,'shade_freq_band')
     shade_freq_band = 0;
 else
@@ -18,8 +18,11 @@ save_dir = [src_dir filesep 'results']; prepare_pac_directories(save_dir);
 addpath(genpath(src_dir)); cd(src_dir);
 flist = dir(fullfile(src_dir,'*.mat')); flist = {flist.name}';
 if isempty(flist); error(['no files found at ' ,src_dir, ',check path inputs and retry']); end
-% Plotting Channel Information/ Channel Maps I confirmed that these ARE in the right order (fleming)
+chan_labels = [grp_proc_info_in.chan_labels];
+if isempty(chan_labels)
+    % Plotting Channel Information/ Channel Maps I confirmed that these ARE in the right order (fleming)
 chan_labels = ["FP2","Fz","FP1","F3","F7","C3","T3","P3","T5","Pz","O1","O2","P4","T6","C4","T4","F8","F4"];
+end
 anterior = grp_proc_info_in.pac_metrics.anterior;
 posterior = grp_proc_info_in.pac_metrics.posterior;
 
@@ -36,8 +39,8 @@ if grp_proc_info_in.pac_metrics.toggle_steps.load_files
     [amp_dist_all,order_dist,order,MI_surr, MI_raw, MI_norm, ...
         comodulogram_column_headers, comodulogram_row_headers, comodulogram_third_dim_headers]= generate_MI_surr(flist,outcomes,src_dir,save_dir,groups);
 else
-    cd([save_dir filesep 'PAC analysis variables']);
-    load('PAC_analysis_variables.mat')
+    cd([save_dir filesep 'PAC analysis variables'])
+    load([save_dir filesep 'PAC analysis variables' filesep 'PAC_analysis_variables.mat'])
 end
 %% check distributions
 if grp_proc_info_in.pac_metrics.toggle_steps.run_permutations
@@ -57,7 +60,7 @@ if grp_proc_info_in.pac_metrics.toggle_steps.run_permutations
     same_idxs.(groups{1,1}) = []; flip_idxs.(groups{1,1}) = []; same_idxs.(groups{1,2}) = []; flip_idxs.(groups{1,2}) = [];
     for group = 1:length(groups)
         %  Cluster analysis Step 2: Run permutation (swapping surrogate/ ids into raw and vice versa)  Then, permutation test of significance
-        [cluster_dist.(groups{1,group}),cluster_dist_t.(groups{1,group})] = run_PAC_permutations(MI_raw.(groups{1,group}),MI_surr.(groups{1,group}),flip_idxs.(groups{1,group}),same_idxs.(groups{1,group}));
+        [cluster_dist.(groups{1,group}),cluster_dist_t.(groups{1,group})] = run_PAC_permutations(MI_raw.(groups{1,group}),MI_surr.(groups{1,group}),flip_idxs.(groups{1,group}),same_idxs.(groups{1,group}),overwrite_unique_combs);
     end
     %% Cluster analysis Step 3: Check which of the original clusters pass the threshold after running the permutations
     for group = 1:length(groups)
@@ -68,7 +71,7 @@ if grp_proc_info_in.pac_metrics.toggle_steps.run_permutations
     %end
 else
     cd([save_dir filesep 'PAC analysis variables']);
-    load('PAC_cluster_variables.mat');
+   load([save_dir filesep 'PAC analysis variables' filesep 'PAC_cluster_variables.mat']);
 end
 %% Approach 2: g1 vs g2 tests (ex: RTT vs TD or ASD vs TD)
 
@@ -79,7 +82,7 @@ if grp_proc_info_in.pac_metrics.toggle_steps.run_compare_clusters
     [compare_clusters,compare_cluster_stats,compare_cluster_stats_t] = characterize_PAC_clusters(compare_sig_points,compare_tvalues,length(comodulogram_row_headers),length(comodulogram_column_headers),length(comodulogram_third_dim_headers));
     %% ASD/RTT vs TD step 2: permutation test
     % Then, permutation test of significance
-    [compare_cluster_dist,compare_cluster_dist_t] = run_PAC_permutations(MI_norm.(groups{1,1}),MI_norm.(groups{1,2}));
+    [compare_cluster_dist,compare_cluster_dist_t] = run_PAC_permutations(MI_norm.(groups{1,1}),MI_norm.(groups{1,2}),[],[],overwrite_unique_combs);
     %% ASD/RTT vs TD step 3: identify significant clusters
     [compare_sig_clusters,compare_cluster_threshold,compare_sig_clusters_t,compare_cluster_threshold_t] = generate_significant_clusters_PAC(compare_cluster_dist,compare_cluster_dist_t,compare_cluster_stats,compare_cluster_stats_t,compare_clusters);
     cd([save_dir filesep 'PAC analysis variables'])
@@ -87,11 +90,11 @@ if grp_proc_info_in.pac_metrics.toggle_steps.run_compare_clusters
         'compare_clusters','compare_sig_clusters_t','compare_cluster_threshold_t','compare_cluster_stats','compare_sig_points','compare_tvalues','compare_pvalues');
 else
     cd([save_dir filesep 'PAC analysis variables'])
-    load('PAC_compare_cluster_variables.mat')
+    load([save_dir filesep 'PAC analysis variables' filesep 'PAC_compare_cluster_variables.mat'])
 end
 
 %% FINAL FIGURE ASD/RTT - TD strength - Fig 2C: Topoplot visualizing the channel- and frequency-space differences in PAC strength by subtracting TD PAC strength in (B) from ASD PAC strength in (A)
-plot_g1_minus_g2_pac_strength(MI_norm,groups,chan_labels,save_dir,grp_proc_info_in.pac_metrics.colors)
+plot_g1_minus_g2_pac_strength(MI_norm,groups,chan_labels,save_dir,grp_proc_info_in.pac_metrics.colors); 
 %% Standard deviations of ASD/RTT and TD
 [std_struct] = compute_MI_std(MI_raw,save_dir,groups);
 %% plot standard deviation  only run if doing "all plots" not generated for PAC paper
@@ -101,7 +104,12 @@ if all_plots ; plot_MI_std(std_struct,save_dir,groups,comodulogram_row_headers,c
 %% FREQ BAND ANALYSIS First compute the phase strength, phase bias, and phase dist for each freq band then plot
 if grp_proc_info_in.pac_metrics.toggle_steps.run_all | grp_proc_info_in.pac_metrics.toggle_steps.run_freq_band_analysis
     outcomes = readtable(outcomes_path);
+    
+    if grp_proc_info_in.set_chan_groups == 0 %if yo udont want to set it run the defaults
     [outcomes] = run_phase_metrics_freq_band_analysis(lf_labels,hf_labels,freq_table,{'WholeBrain','Anterior','Posterior','FP1FP2','C3C4','O1O2'},{[1:18],anterior,posterior,[1,3],[6,15],[11,12]},outcomes,comodulogram_column_headers,comodulogram_row_headers,order_dist,order,groups,amp_dist_all,MI_norm,alpha_deg);
+    else
+        [outcomes] = run_phase_metrics_freq_band_analysis(lf_labels,hf_labels,freq_table,grp_proc_info_in.chan_group_labels,grp_proc_info_in.chan_group_positions,outcomes,comodulogram_column_headers,comodulogram_row_headers,order_dist,order,groups,amp_dist_all,MI_norm,alpha_deg);
+    end
     writetable(outcomes,[save_dir filesep 'freqband_PAC_metrics_complete.xlsx']);
     %plot phase distribution
     if 1; plot_pac_phase_distribution(outcomes,save_dir,grp_proc_info_in.pac_metrics.colors); end
@@ -141,8 +149,13 @@ for sig_cluster_method = 1:2
         overlap_vec = {'Overlap',[groups{1,1},'only']};
         %[8,13,9,14,10,11,12]
         %[1,2,3,4,5,17,18]
+        if grp_proc_info_in.set_chan_groups == 0 %if yo udont want to set it run the defaults
         region_table = table([1,3], [11,12],[7,16],[6, 15],anterior,posterior,'VariableNames',{'FP1FP2','O1O2','T3T4','C3C4','Anterior','Posterior'});
+        else
+            region_table = table(cell2mat(grp_proc_info_in.chan_group_positions),'VariableNames',grp_proc_info_in.chan_group_labels); %might have an issue with multiple channels
+        end
         [outcomes] = compute_MI_average(outcomes,order_dist,order,groups,amp_dist_all,MI_norm,g1_g2_overlap_clusters,g1_nog2_clusters,region_table,overlap_vec);
+
         writetable(outcomes,[save_dir filesep 'PAC_MInorm_cluster_averages_revised_allfreqpairs.xlsx']);
     end
     %% PHASE BIAS
@@ -198,7 +211,13 @@ for sig_cluster_method = 1:2
             elseif overlap == 1
                 curr_cluster = g1_nog2_clusters;
             end % Figure 5: Group differences of phase bias proportion in lf-hf pair coupling for overlap and non overlapped clusters.
-            phase_prop_bins = compute_phase_props(phase_prop_bins,amp_dist_all,groups, freq_table,lf_labels,hf_labels,comodulogram_row_headers,comodulogram_column_headers,[region_table(:,{'Anterior','Posterior'}) table([1:18],'VariableNames',{'WholeBrain'})],curr_cluster,overlap);
+            if grp_proc_info_in.set_chan_groups == 0 %if yo udont want to set it run the defaults
+                region_input = [region_table(:,{'Anterior','Posterior'}) table([1:18],'VariableNames',{'WholeBrain'})];
+            else
+                region_input = [region_table(:,grp_proc_info_in.chan_group_labels)]; %might have an issue with multiple channels
+            end
+
+            phase_prop_bins = compute_phase_props(phase_prop_bins,amp_dist_all,groups, freq_table,lf_labels,hf_labels,comodulogram_row_headers,comodulogram_column_headers,region_input,curr_cluster,overlap);
         end
         %phase bias stats for phase prop
         phase_stats = compute_phase_prop_stats(phase_prop_bins,alpha_deg,groups,save_dir);

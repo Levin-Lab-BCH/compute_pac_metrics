@@ -13,10 +13,10 @@ end
 for field = 1:length(fields)
    % disp(field)
     if contains(fields{field},'PhaseBins')
-            eval(['outcomes.',fields{field},'=nan([size(outcomes,1),18]);'])
+            eval(['outcomes.','(fields{field})','=nan([size(outcomes,1),18]);'])
     else
         try
-    eval(['outcomes.',fields{field},'=nan([size(outcomes,1),1]);'])
+    eval(['outcomes.','(fields{field})','=nan([size(outcomes,1),1]);'])
         catch
             a = 5
         end
