@@ -32,7 +32,13 @@ for f = 1:size(flist,1)
 
     % load file
     load(flist{f});
-    chan_idxs = file_proc_info.net_10_20_elecs;
+
+    % if none of the 10_20 electrodes were run (ex mouse data)
+    if sum(isnan(file_proc_info.net_10_20_elecs)) == length(file_proc_info.net_10_20_elecs)
+        chan_idxs = file_proc_info.beapp_indx{:}; %not sure this perfect
+    else
+    chan_idxs = file_proc_info.net_10_20_elecs; % default is 10-20
+    end
     %check for missing channels/pad with nans
     curr_good_chans = cell2mat(cellfun(@(x) (str2num(x(10:end))),comodulogram_third_dim_headers,'UniformOutput',false));
     missing_chans = setdiff(chan_idxs,curr_good_chans);

@@ -5,7 +5,8 @@ function [clusters,cluster_stats,cluster_stats_t] =characterize_PAC_clusters (si
 % Data points where the null hypothesis was rejected (p < .05, 2-sided 
 % t-test) were selected.
 clusters = nan(row,column,third);
-cluster_stats = cell(18,1);
+cluster_stats = cell(third,1);
+cluster_stats_t = cell(third,1);
 % identify clusters for each channel
 for ch = 1:third
     %check if whole channel has nans (b/c less than 2 participants didn't

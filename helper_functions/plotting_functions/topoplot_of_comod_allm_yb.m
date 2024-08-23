@@ -91,7 +91,16 @@ while chan < size(chan_strs,2)+1
                %annotation('textbox',[new_chan_pos(chan,1), new_chan_pos(chan,2) 0 0],'String',chan_strs{1,chan},'FitBoxToText','on','EdgeColor','none','FontSize',12);
 
 %       h1 = openfig(strcat('RTT_',chan_strs{1,chan},savestr),'reuse'); % open figure
+        try
         im = imread(strcat(group_lab,chan_strs{1,chan},savestr));
+        catch ME
+            if strcmp(ME.message,['File',' "',strcat(group_lab,chan_strs{1,chan},savestr),'" does not exist.'])
+                warning(ME.message)
+                disp('skipping visualization')
+                chan = chan+1;
+                continue
+            end
+        end
         fig2 = figure(2);
         imshow(im) ;
         ax1 = gca; % get handle to axes of figure

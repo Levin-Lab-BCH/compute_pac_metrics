@@ -1,4 +1,4 @@
-function [cluster_dist,cluster_dist_t] = run_PAC_permutations(curr_MI_raw,curr_MI_surr,curr_flip_idxs,curr_same_idxs)
+function [cluster_dist,cluster_dist_t] = run_PAC_permutations(curr_MI_raw,curr_MI_surr,curr_flip_idxs,curr_same_idxs,overwrite_unique_combs)
 % 1000 iterations
 
 % initialize cluster distribution
@@ -38,7 +38,7 @@ while count < max_combs && count < 1000
     %same_idxs = idxs(num_flip+1:end);
 
     %yb adding for abcct verification
-    if any((cell2mat(cellfun(@(x) isequal(sort(idxs(1:num_flip)),sort(x)),flip_idxs,'UniformOutput',false))) & (cell2mat(cellfun(@(x) isequal(sort(idxs(num_flip+1:end)),sort(x)),same_idxs,'UniformOutput',false))))  % if these values have been flipped already, skip this round
+    if ~overwrite_unique_combs & any((cell2mat(cellfun(@(x) isequal(sort(idxs(1:num_flip)),sort(x)),flip_idxs,'UniformOutput',false))) & (cell2mat(cellfun(@(x) isequal(sort(idxs(num_flip+1:end)),sort(x)),same_idxs,'UniformOutput',false))))  % if these values have been flipped already, skip this round
         max_combs = max_combs + 1;
         continue
     else
@@ -82,9 +82,9 @@ while count < max_combs && count < 1000
  perm_cluster_dist_t = perm_cluster_dist_t(~cellfun('isempty',perm_cluster_dist_t));
 
        try
-         cluster_dist = cat(1,cluster_dist,perm_cluster_dist);
-         cluster_dist_t = cat(1,cluster_dist_t,perm_cluster_dist_t);
-          if length(perm_cluster_dist(~cellfun('isempty',perm_cluster_dist))) > 0
+         cluster_dist = cat(2,cluster_dist,perm_cluster_dist);
+         cluster_dist_t = cat(2,cluster_dist_t,perm_cluster_dist_t);
+          if length(perm_cluster_dist(~cellfun('isempty',perm_cluster_dist))) == 0
               a = 5;
           end
 
